@@ -115,17 +115,26 @@ USE_L10N = True
 USE_TZ = True
 
 
-AWS_ACCESS_KEY_ID = ''
-AWS_SECRET_ACCESS_KEY = ''
-AWS_STORAGE_BUCKET_NAME = ''
-AWS_S3_CUSTOM_DOMAIN = '%s.s3.amazonaws.com' % AWS_STORAGE_BUCKET_NAME
-AWS_S3_OBJECT_PARAMETERS = {
-    'CacheControl': 'max-age=86400',
-}
-AWS_LOCATION = 'static'
+DO_SPACES_ACCESS_KEY_ID = '<your_do_spaces_id>' 
+DO_SPACES_SECRET_ACCESS_KEY = '<your_do_spaces_secret_key>' 
+DO_SPACES_SPACE_NAME = '<your_do_spaces_name>' 
+DO_SPACES_SPACE_FOLDER = '<folder_to_save_files>' # recommended: Your project name, e.g: 'blog' 
+DO_SPACES_ENDPOINT_URL = '<your_do_spaces_endpoint_url>' # must be your Space endpoint url, e.g: 'https://sfo2.digitaloceanspaces.com' 
+DO_SPACES_CACHE_MAX_AGE = 86400 
+DO_SPACES_DEFAULT_ACL = None
 
-STATICFILES_DIRS = [
-    os.path.join(BASE_DIR, 'mysite/static'),
-]
-STATIC_URL = 'https://%s/%s/' % (AWS_S3_CUSTOM_DOMAIN, AWS_LOCATION)
-STATICFILES_STORAGE = 'storages.backends.s3boto3.S3Boto3Storage'
+# Set File locations 
+# 
+DO_SPACES_STATIC_LOCATION = '{FOLDER}/static'.format(FOLDER=DO_SPACES_SPACE_FOLDER) 
+
+DO_SPACES_PUBLIC_MEDIA_LOCATION = '{FOLDER}/media/public'.format(FOLDER=DO_SPACES_SPACE_FOLDER) 
+
+DO_SPACES_PRIVATE_MEDIA_LOCATION = '{FOLDER}/media/private'.format(FOLDER=DO_SPACES_SPACE_FOLDER)
+
+# Static files config 
+STATIC_URL = 'https://{ENDPOINT_URL}/{STATIC_LOCATION}/'.format(ENDPOINT_URL=DO_SPACES_ENDPOINT_URL, STATIC_LOCATION=DO_SPACES_STATIC_LOCATION)
+
+# Configure file storage settings 
+STATICFILES_STORAGE = 'storages.backends.do_spaces.DigitalOceanSpacesStaticStorage' 
+DEFAULT_FILE_STORAGE = 'storages.backends.do_spaces.DigitalOceanSpacesPublicMediaStorage' 
+PRIVATE_FILE_STORAGE = 'storages.backends.do_spaces.DigitalOceanSpacesPrivateMediaStorage'
